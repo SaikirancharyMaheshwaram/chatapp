@@ -28,12 +28,17 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     },
     [socket]
   );
+  const onMessageRecive = useCallback((msg: string) => {
+    console.log("From the Server", msg);
+  }, []);
   useEffect(() => {
     const _socket = io("http://localhost:8000");
     setSocket(_socket);
+    _socket.on("message", onMessageRecive);
 
     return () => {
       _socket.disconnect();
+      _socket.off("message", onMessageRecive);
       setSocket(undefined);
     };
   }, []);
